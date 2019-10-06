@@ -1,0 +1,35 @@
+name: Actions@site
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "site/**"
+
+jobs:
+  Build-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Move files to root
+        run: cp -r site/. . && rm -r api
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Run code quality checks
+        run: npm run --silent lint
+
+      - name: Run production build
+        run: npm run export
+
+      - name: Publish to Netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.SITE_NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_NETLIFY_API_ID }}
+        with:
+          args: deploy
