@@ -17,7 +17,7 @@ jobs:
       - name: Decrypt configuration file
         run: sh ./.github/scripts/decrypt_secret.sh
         env:
-          FILE_INPUT: .github/secrets/messenger-bot.json.gpg
+          FILE_INPUT: .github/secrets/messenger-bot.ts.gpg
           FILE_OUTPUT: messenger-bot/src/config/app.ts
           SECRET_PASSPHRASE: ${{secrets.MB_SECRET_PASSPHRASE}}
 
