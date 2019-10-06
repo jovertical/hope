@@ -1,15 +1,4 @@
-import * as express from 'express'
-import * as bodyParser from 'body-parser'
-import webhooks from './routes/webhooks'
-
-// Create webserver
-const app = express()
-
-// Register parsers
-app.use(bodyParser.json())
-
-// Load application routes
-app.use('/webhook', webhooks)
+import app from './server'
 
 // Set application defaults
 app.set('port', process.env.PORT || 3000)

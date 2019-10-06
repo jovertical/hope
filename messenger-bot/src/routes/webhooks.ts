@@ -11,10 +11,10 @@ const router = express.Router()
  */
 router.get('/', (req, res) => {
     if (req.query['hub.verify_token'] !== process.env.WEBHOOK_TOKEN) {
-        return res.send('Error, wrong token')
+        return res.status(422).send('Error, wrong token')
     }
 
-    return res.send(req.query['hub.challenge'])
+    res.send(req.query['hub.challenge'])
 })
 
 /**
@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
  */
 router.post('/', (req, res) => {
     /*
-        We must send back a status of 200(success) within 20 seconds
+        We must send back a status of 200 (success) within 20 seconds
         to let facebook know we've successfully received the callback.
         Otherwise, the request will time out.
 
