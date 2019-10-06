@@ -28,8 +28,3 @@ jobs:
 
       - name: Run production build
         run: npm run build
-
-      - name: Run entrypoint
-        run: node dist/index.js
-        env:
-          PORT: 1337
