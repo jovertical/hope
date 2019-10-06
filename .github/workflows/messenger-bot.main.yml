@@ -1,0 +1,34 @@
+name: Actions@messenger-bot
+
+on:
+  push:
+    branches:
+      - master
+    # paths:
+    #   - "messenger-bot/**"
+
+jobs:
+  Build-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Decrypt configuration file
+        run: sh ./.github/scripts/decrypt_secret.sh
+        env:
+          INPUT_PATH: .github/secrets/messenger-bot.json.gpg
+          OUTPUT_PATH: messenger-bot/src/config/default.json
+          SECRET_PASSPHRASE: ${{secrets.MB_SECRET_PASSPHRASE}}
+
+      - name: Move files to root
+        run: cp -r messenger-bot/. . && rm -r messenger-bot site
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the test suite
+        run: ./node_modules/.bin/jest
+
+      - name: Run code quality checks
+        run: npm run --silent lint

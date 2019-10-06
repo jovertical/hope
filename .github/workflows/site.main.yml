@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - "site/**"
+    paths:
+      - "site/**"
 
 jobs:
   Build-Deploy:
