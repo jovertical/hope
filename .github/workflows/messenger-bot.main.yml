@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - "messenger-bot/**"
+    paths:
+      - "messenger-bot/**"
 
 jobs:
   Build-Deploy:
@@ -32,3 +32,9 @@ jobs:
 
       - name: Run code quality checks
         run: npm run --silent lint
+
+      - name: Run production build
+        run: npm run build
+
+      - name: Run entrypoint
+        run: node dist/index.js
