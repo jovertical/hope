@@ -14,13 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Decrypt configuration file
-        run: sh ./.github/scripts/decrypt_secret.sh
-        env:
-          FILE_INPUT: .github/secrets/messenger-bot.ts.gpg
-          FILE_OUTPUT: messenger-bot/src/config/app.ts
-          SECRET_PASSPHRASE: ${{secrets.MB_SECRET_PASSPHRASE}}
-
       - name: Move files to root
         run: cp -r messenger-bot/. . && rm -r messenger-bot site
 
