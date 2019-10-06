@@ -31,3 +31,5 @@ jobs:
 
       - name: Run entrypoint
         run: node dist/index.js
+        env:
+          PORT: 1337
