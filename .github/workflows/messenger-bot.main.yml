@@ -17,8 +17,8 @@ jobs:
       - name: Decrypt configuration file
         run: sh ./.github/scripts/decrypt_secret.sh
         env:
-          INPUT_PATH: .github/secrets/messenger-bot.json.gpg
-          OUTPUT_PATH: messenger-bot/src/config/default.json
+          FILE_INPUT: .github/secrets/messenger-bot.json.gpg
+          FILE_OUTPUT: messenger-bot/src/config/app.ts
           SECRET_PASSPHRASE: ${{secrets.MB_SECRET_PASSPHRASE}}
 
       - name: Move files to root
