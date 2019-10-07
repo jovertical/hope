@@ -1,3 +1,8 @@
+/**
+ * Entrypoint
+ *
+ * Here is where we bootstrap & expose the app.
+ */
 import app from './server'
 
 // Set application defaults

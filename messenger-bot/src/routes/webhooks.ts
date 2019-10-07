@@ -1,3 +1,9 @@
+/**
+ * Webhook Routes
+ *
+ * Route declarations here are prefixed with "/webhook"
+ * See https://developers.facebook.com/docs/messenger-platform/getting-started/webhook-setup
+ */
 import * as express from 'express'
 
 const router = express.Router()
@@ -36,9 +42,21 @@ router.post('/', (req, res) => {
     */
     res.sendStatus(200)
 
-    const data = req.body
+    const body = req.body
 
-    console.log(data)
+    // We don't care about non-page interactions at this point.
+    if (body.object !== 'page') {
+        return res.sendStatus(404)
+    }
+
+    // Iterates over each entry - there may be multiple if batched
+    body.entry.forEach(entry => {
+        // Gets the message. entry.messaging is an array, but
+        // will only ever contain one message, so we get index 0
+        let event = entry.messaging[0]
+
+        console.log(event)
+    })
 })
 
 export default router
