@@ -1,11 +1,11 @@
-name: Actions@bot
+name: Actions@api
 
 on:
   push:
     branches:
       - master
     paths:
-      - "bot/**"
+      - "api/**"
 
 jobs:
   Build-Deploy:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Move files to root
-        run: cp -r bot/. . && rm -r api bot site
+        run: cp -r api/. . && rm -r api bot site
 
       - name: Install dependencies
         run: npm install
@@ -38,11 +38,11 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         with:
-          args: container:push -a hope-chatbot web
+          args: container:push -a hope-backend web
 
       - name: Release from Heroku
         uses: actions/heroku@master
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         with:
-          args: container:release -a hope-chatbot web
+          args: container:release -a hope-backend web
