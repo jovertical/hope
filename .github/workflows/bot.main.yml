@@ -26,20 +26,20 @@ jobs:
       - name: Login to Heroku
         uses: actions/heroku@master
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_API_KEY: ${{ secrets.BOT_HEROKU_API_KEY }}
         with:
           args: container:login
 
       - name: Push to Heroku
         uses: actions/heroku@master
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_API_KEY: ${{ secrets.BOT_HEROKU_API_KEY }}
         with:
           args: container:push -a hope-chatbot web
 
       - name: Release from Heroku
         uses: actions/heroku@master
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_API_KEY: ${{ secrets.BOT_HEROKU_API_KEY }}
         with:
           args: container:release -a hope-chatbot web
