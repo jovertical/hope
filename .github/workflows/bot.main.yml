@@ -16,3 +16,30 @@ jobs:
 
       - name: Move files to root
         run: cp -r bot/. . && rm -r bot site
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the test suite
+        run: npm run test
+
+      - name: Login to Heroku
+        uses: actions/heroku@master
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        with:
+          args: container:login
+
+      - name: Push to Heroku
+        uses: actions/heroku@master
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        with:
+          args: container:push -a hope-chatbot web
+
+      - name: Release from Heroku
+        uses: actions/heroku@master
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        with:
+          args: container:release -a hope-chatbot web
