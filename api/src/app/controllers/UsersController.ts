@@ -22,7 +22,7 @@ export default class UsersController extends Controller {
     }
 
     /**
-     * Create a new user
+     * Create a new user.
      *
      * @param req Request object
      * @param res Response object
