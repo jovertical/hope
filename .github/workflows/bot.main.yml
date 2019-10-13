@@ -23,6 +23,9 @@ jobs:
       - name: Run the test suite
         run: npm run test
 
+      - name: Run production build
+        run: npm run build
+
       - name: Login to Heroku
         uses: actions/heroku@master
         env:
