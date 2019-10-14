@@ -8,6 +8,7 @@ import { controller, httpGet, httpPost } from 'inversify-express-utils'
 import { container } from '../../bootstrap'
 import Controller from './Controller'
 import MessageSender from '../services/MessageSender'
+import { retrieveProfile } from '../../helpers'
 
 @controller('/webhook')
 export default class WebhooksController extends Controller {
@@ -23,7 +24,7 @@ export default class WebhooksController extends Controller {
     @httpPost('/')
     public async handle(req: Request, res: Response) {
         const data = req.body
-        const sender = container.get<MessageSender>('MessageSender')
+        const messageSender = container.get<MessageSender>('MessageSender')
 
         if (data.object !== 'page') {
             // We don't care about non page interactions at this point.
@@ -31,20 +32,31 @@ export default class WebhooksController extends Controller {
         }
 
         for (const entry of data.entry) {
-            for (const event of entry.messaging) {
-                if (!event.message || event.message.is_echo) {
-                    continue
-                }
+            ;(async function() {
+                for (const event of entry.messaging) {
+                    // The facebook user's Page-scoped ID (PSID).
+                    const id = event.sender.id
+                    const userMessageSender = messageSender.setRecepient({ id })
 
-                // Yay! We got a new message!
-                // We retrieve the Facebook user ID of the sender
-                const senderId = event.sender.id
-                const message = {
-                    text: 'Hello!'
-                }
+                    // Notifies user that the we are preparing something...
+                    userMessageSender.setSenderAction('typing_on').send()
 
-                sender.send({ id: senderId }, message)
-            }
+                    // We will retrieve the user's information using the PSID.
+                    const { name, gender } = await retrieveProfile(id, ['name', 'gender'])
+
+                    // Notifies user that the we are done...
+                    userMessageSender.setSenderAction('typing_off').send()
+
+                    if (event.message) {
+                        userMessageSender
+                            .setMessage({
+                                text: `Hello ${gender === 'male' ? 'Sir' : "Ma'am"} ${name}!`
+                            })
+                            .send()
+                    } else if (event.postback) {
+                    }
+                }
+            })()
         }
     }
 }

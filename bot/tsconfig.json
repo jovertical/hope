@@ -8,8 +8,7 @@
         "sourceMap": false,
         "baseUrl": ".",
         "paths": {
-            "*": ["node_modules/"],
-            "typings/*": ["src/typings/*"]
+            "*": ["node_modules/"]
         },
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,

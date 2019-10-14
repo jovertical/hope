@@ -1,28 +1,23 @@
-interface Recipient {
+export interface Recipient {
     /**
      * Facebook users' id
      */
     id: number
 }
 
-interface Sender {
+export interface Sender {
     /**
-     * Facebook page's id
+     * It can be a Page-scoped ID - attached to a user and is unique for each
+     * page they start a conversation with, or it can be the page's ID itself.
      */
     id: number
 }
 
-export enum QuickReplyTypes {
-    text = 'text',
-    userEmail = 'user_email',
-    userPhoneNumber = 'user_phone_number'
-}
-
-interface QuickReply {
+export interface QuickReply {
     /**
      * How the quick reply button will be displayed
      */
-    content_type: QuickReplyTypes
+    content_type: 'text' | 'user_email' | 'user_phone_number'
 
     /**
      * The text that will be displayed in the Quick Reply button
@@ -40,7 +35,7 @@ interface QuickReply {
     image_url?: string
 }
 
-interface Message {
+export interface Message {
     /**
      * The body of the message.
      */
