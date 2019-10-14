@@ -48,12 +48,12 @@ export default class WebhooksController extends Controller {
                     userMessageSender.setSenderAction('typing_off').send()
 
                     if (event.message) {
+                    } else if (event.postback) {
                         userMessageSender
                             .setMessage({
                                 text: `Hello ${gender === 'male' ? 'Sir' : "Ma'am"} ${name}!`
                             })
                             .send()
-                    } else if (event.postback) {
                     }
                 }
             })()
