@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { controller, httpGet, httpPost } from 'inversify-express-utils'
-import { Repository } from 'typeorm'
 import Controller from './Controller'
 import User from '../models/User'
 
@@ -29,7 +28,7 @@ export default class UsersController extends Controller {
      */
     @httpPost('/')
     public async store(req: Request, res: Response) {
-        const repo: Repository<User> = await this.getRepository(User)
+        const repo = await this.getRepository(User)
 
         const user = await repo.save({
             name: req.body.name

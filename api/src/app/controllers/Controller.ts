@@ -1,8 +1,7 @@
 import { injectable } from 'inversify'
 import { interfaces } from 'inversify-express-utils'
-import { createConnection, Connection, Repository } from 'typeorm'
+import { Connection, createConnection, getConnection } from 'typeorm'
 import { getDatabaseConnection } from '../../helpers'
-import Model from '../models/Model'
 
 @injectable()
 export default class Controller implements interfaces.Controller {
@@ -11,13 +10,11 @@ export default class Controller implements interfaces.Controller {
      *
      * @param model The model of the repository.
      */
-    public getRepository(model: any): Promise<Repository<Model>> {
-        return createConnection(getDatabaseConnection()).then((connection: Connection) => {
-            const repo: Repository<Model> = connection.getRepository(model)
+    public getRepository(model: any) {
+        const connectionName = getDatabaseConnection()
 
-            connection.close()
-
-            return repo
-        })
+        return createConnection(connectionName)
+            .then((con: Connection) => con.getRepository(model))
+            .catch(() => getConnection(connectionName).getRepository(model))
     }
 }
