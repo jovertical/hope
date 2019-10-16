@@ -42,18 +42,75 @@ export default class WebhooksController extends Controller {
                     userMessageSender.setSenderAction('typing_on').send()
 
                     // We will retrieve the user's information using the PSID.
-                    const { name, gender } = await retrieveProfile(id, ['name', 'gender'])
+                    const profile = await retrieveProfile(id, ['first_name', 'gender'])
 
                     // Notifies user that the we are done...
-                    userMessageSender.setSenderAction('typing_off').send()
+                    await userMessageSender.setSenderAction('typing_off').send()
 
-                    if (event.message) {
-                    } else if (event.postback) {
-                        userMessageSender
-                            .setMessage({
-                                text: `Hello ${gender === 'male' ? 'Sir' : "Ma'am"} ${name}!`
-                            })
-                            .send()
+                    if (event.postback) {
+                        // When they clicked / pressed the "Get Started" button or
+                        // a persistent menu item is pressed...
+                        const postback = event.postback
+
+                        switch (postback.payload) {
+                            case 'GET_STARTED':
+                                // Send a welcome message
+                                userMessageSender
+                                    .setMessage({
+                                        text: `Hey! What's up, ${profile.first_name}? I am HOPE. I want to keep you safe from any harmful events with our realiable forecast, emergency kits and incident reporting. For more detailed information and visualization, you can check out the app:`
+                                    })
+                                    .send()
+                                break
+
+                            case 'QUICK_UPDATE':
+                                userMessageSender
+                                    .setMessage({
+                                        text: 'Please tell me what update you want',
+                                        quick_replies: [
+                                            {
+                                                content_type: 'text',
+                                                title: 'Weather',
+                                                payload: 'QU_WEATHER'
+                                            },
+
+                                            {
+                                                content_type: 'text',
+                                                title: 'Temperature',
+                                                payload: 'QU_TEMPERATURE'
+                                            },
+
+                                            {
+                                                content_type: 'text',
+                                                title: 'Earthquakes',
+                                                payload: 'QU_EARTHQUAKE'
+                                            }
+                                        ]
+                                    })
+                                    .send()
+                                break
+
+                            case 'EMERGENCY_KIT':
+                                userMessageSender
+                                    .setMessage({
+                                        text: 'Is there an emergency? What can I provide?',
+                                        quick_replies: [
+                                            {
+                                                content_type: 'text',
+                                                title: 'Evacuation Areas',
+                                                payload: 'EK_EVACUATION_AREAS'
+                                            },
+                                            {
+                                                content_type: 'text',
+                                                title: 'Emergency Hotlines',
+                                                payload: 'EK_EMERGENCY_LINES'
+                                            }
+                                        ]
+                                    })
+                                    .send()
+                                break
+                        }
+                    } else if (event.message) {
+                        console.log(event.message)
                     }
                 }
             })()
