@@ -57,7 +57,8 @@ export default class WebhooksController extends Controller {
                                 // Send a welcome message
                                 userMessageSender
                                     .setMessage({
-                                        text: `Hey! What's up, ${profile.first_name}? I am HOPE. I want to keep you safe from any harmful events with our realiable forecast, emergency kits and incident reporting. For more detailed information and visualization, you can check out the app:`
+                                        text: `Hey! What's up, ${profile.first_name ||
+                                            'buddy'}? I am HOPE. I want to keep you safe from any harmful events with our realiable forecast, emergency kits and incident reporting. For more detailed information and visualization, you can check out the app:`
                                     })
                                     .send()
                                 break
