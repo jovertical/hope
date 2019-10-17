@@ -8,6 +8,7 @@ import { controller, httpGet, httpPost } from 'inversify-express-utils'
 import { container } from '../../bootstrap'
 import Controller from './Controller'
 import MessageSender from '../services/MessageSender'
+import WebhookHandler from '../services/WebhookHandler'
 import { retrieveProfile } from '../../helpers'
 
 @controller('/webhook')
@@ -25,6 +26,7 @@ export default class WebhooksController extends Controller {
     public async handle(req: Request, res: Response) {
         const data = req.body
         const messageSender = container.get<MessageSender>('MessageSender')
+        const webhookHandler = container.get<WebhookHandler>('WebhookHandler')
 
         if (data.object !== 'page') {
             // We don't care about non page interactions at this point.
@@ -48,70 +50,9 @@ export default class WebhooksController extends Controller {
                     await userMessageSender.setSenderAction('typing_off').send()
 
                     if (event.postback) {
-                        // When they clicked / pressed the "Get Started" button or
-                        // a persistent menu item is pressed...
-                        const postback = event.postback
-
-                        switch (postback.payload) {
-                            case 'GET_STARTED':
-                                // Send a welcome message
-                                userMessageSender
-                                    .setMessage({
-                                        text: `Hey! What's up, ${profile.first_name ||
-                                            'buddy'}? I am HOPE. I want to keep you safe from any harmful events with our realiable forecast, emergency kits and incident reporting. For more detailed information and visualization, you can check out the app:`
-                                    })
-                                    .send()
-                                break
-
-                            case 'QUICK_UPDATE':
-                                userMessageSender
-                                    .setMessage({
-                                        text: 'Please tell me what update you want',
-                                        quick_replies: [
-                                            {
-                                                content_type: 'text',
-                                                title: 'Weather',
-                                                payload: 'QU_WEATHER'
-                                            },
-
-                                            {
-                                                content_type: 'text',
-                                                title: 'Temperature',
-                                                payload: 'QU_TEMPERATURE'
-                                            },
-
-                                            {
-                                                content_type: 'text',
-                                                title: 'Earthquakes',
-                                                payload: 'QU_EARTHQUAKE'
-                                            }
-                                        ]
-                                    })
-                                    .send()
-                                break
-
-                            case 'EMERGENCY_KIT':
-                                userMessageSender
-                                    .setMessage({
-                                        text: 'Is there an emergency? What can I provide?',
-                                        quick_replies: [
-                                            {
-                                                content_type: 'text',
-                                                title: 'Evacuation Areas',
-                                                payload: 'EK_EVACUATION_AREAS'
-                                            },
-                                            {
-                                                content_type: 'text',
-                                                title: 'Emergency Hotlines',
-                                                payload: 'EK_EMERGENCY_LINES'
-                                            }
-                                        ]
-                                    })
-                                    .send()
-                                break
-                        }
+                        webhookHandler.handlePostback(event.postback, userMessageSender, profile)
                     } else if (event.message) {
-                        console.log(event.message)
+                        webhookHandler.handleMessage(event.message, userMessageSender)
                     }
                 }
             })()

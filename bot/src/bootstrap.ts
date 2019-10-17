@@ -12,6 +12,7 @@ import 'isomorphic-unfetch'
 import { Container } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import MessageSender from './app/services/MessageSender'
+import WebhookHandler from './app/services/WebhookHandler'
 
 // Register controllers
 import './app/controllers/WebhooksController'
@@ -21,6 +22,7 @@ export const container = new Container()
 
 // Register services here
 container.bind<MessageSender>('MessageSender').to(MessageSender)
+container.bind<WebhookHandler>('WebhookHandler').to(WebhookHandler)
 
 // Create the server
 const server = new InversifyExpressServer(container)

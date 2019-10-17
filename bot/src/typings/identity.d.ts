@@ -1,4 +1,4 @@
-interface Profile {
+export interface Profile {
     /**
      * The user's Page-scoped ID (PSID)
      */
